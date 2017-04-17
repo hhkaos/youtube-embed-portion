@@ -86,8 +86,9 @@
       'endSeconds': convert_time(params.e),
       'suggestedQuality': 'large'
     });
-
-    player.mute()
+    if(params.m === "true"){
+      player.mute();
+    }
   }
 
   // 5. The API calls this function when the player's state changes.
