@@ -43,7 +43,12 @@
   var params = getQueryParameters();
 
   var $thumb = $("#player");
-  $thumb.css("background-image","url(http://img.youtube.com/vi/"+params.v+"/maxresdefault.jpg)");
+  var res = "maxresdefault";
+  if(params.imgId){
+    res = params.imgId;
+    $thumb.css("background-size","100% 100%");
+  }
+  $thumb.css("background-image","url(http://img.youtube.com/vi/"+params.v+"/"+res+".jpg)");
 
   $thumb.click(function(){
     player = new YT.Player('player', {
