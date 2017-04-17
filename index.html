@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Youtube embed portion video</title>
+
+  <meta name="description" content="Embed a trimmed/chopped youtube video">
+  <meta name="author" content="Raul Jimenez">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style type="text/css">
+
+  html,
+  body,
+  #player{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+  #player{
+    background-size: cover;
+    text-align: center
+  }
+  #player > i{
+    font-size: 6rem;
+    margin-top: 4.7rem;
+    color: #c51109
+  }
+  </style>
+</head>
+<body>
+
+  <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+  <div id="player">
+    <i class="fa fa-play-circle" aria-hidden="true"></i>
+
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script>
+  var params = getQueryParameters();
+
+  var $thumb = $("#player");
+  $thumb.css("background-image","url(http://img.youtube.com/vi/"+params.v+"/maxresdefault.jpg)");
+
+  $thumb.click(function(){
+    player = new YT.Player('player', {
+      height: '390',
+      width: '640',
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      },
+      playerVars: {
+        loop: 1
+      }
+    });
+  });
+
+
+  // 2. This code loads the IFrame Player API code asynchronously.
+  var tag = document.createElement('script');
+
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // 3. This function creates an <iframe> (and YouTube player)
+  //    after the API code downloads.
+  var player;
+  function onYouTubeIframeAPIReady() {
+
+
+  }
+
+  //?v=rMwZTlFAeg8&s=20m48s&e=20m52s
+  // 4. The API will call this function when the video player is ready.
+  function onPlayerReady(event) {
+    //event.target.playVideo();
+
+    event.target.loadVideoById({
+      'videoId': params.v,
+      'startSeconds': convert_time(params.s),
+      'endSeconds': convert_time(params.e),
+      'suggestedQuality': 'large'
+    });
+
+    player.mute()
+  }
+
+  // 5. The API calls this function when the player's state changes.
+  //    The function indicates that when playing a video (state=1),
+  //    the player should play for six seconds and then stop.
+  var done = false;
+  function onPlayerStateChange(event) {
+    /*if (event.data == YT.PlayerState.PLAYING && !done) {
+    setTimeout(stopVideo, 6000);
+    done = true;
+    console.log("true!")
+    debugger;
+  }*/
+  if (event.data === YT.PlayerState.ENDED) {
+    console.log("End!!")
+    player.seekTo(convert_time(params.s))
+  }
+}
+function stopVideo() {
+  player.stopVideo();
+}
+
+
+function convert_time(duration) {
+  var a = duration.match(/\d+/g);
+
+  if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
+    a = [0, a[0], 0];
+  }
+
+  if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+    a = [a[0], 0, a[1]];
+  }
+  if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
+    a = [a[0], 0, 0];
+  }
+
+  duration = 0;
+
+  if (a.length == 3) {
+    duration = duration + parseInt(a[0]) * 3600;
+    duration = duration + parseInt(a[1]) * 60;
+    duration = duration + parseInt(a[2]);
+  }
+
+  if (a.length == 2) {
+    duration = duration + parseInt(a[0]) * 60;
+    duration = duration + parseInt(a[1]);
+  }
+
+  if (a.length == 1) {
+    duration = duration + parseInt(a[0]);
+  }
+  return duration
+}
+
+function getQueryParameters(){
+  var search = location.search.substring(1);
+  return JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+}
+</script>
+</body>
+</html>
