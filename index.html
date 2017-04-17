@@ -40,6 +40,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
   <script>
+  var player;
   var params = getQueryParameters();
 
   var $thumb = $("#player");
@@ -48,6 +49,7 @@
     res = params.imgId;
     $thumb.css("background-size","100% 100%");
   }
+
   $thumb.css("background-image","url(http://img.youtube.com/vi/"+params.v+"/"+res+".jpg)");
 
   $thumb.click(function(){
@@ -74,7 +76,7 @@
 
   // 3. This function creates an <iframe> (and YouTube player)
   //    after the API code downloads.
-  var player;
+
   function onYouTubeIframeAPIReady() {
 
 
@@ -93,6 +95,9 @@
     });
     if(params.m === "true"){
       player.mute();
+    }
+    if(params.speed){
+      player.setPlaybackRate(parseFloat(params.speed))
     }
   }
 
