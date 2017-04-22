@@ -113,8 +113,10 @@
     debugger;
   }*/
   if (event.data === YT.PlayerState.ENDED) {
-    console.log("End!!")
-    player.seekTo(convert_time(params.s))
+    console.log("End!!"+params.l)
+    if(params.l === "true"){
+      player.seekTo(convert_time(params.s))
+    }
   }
 }
 function stopVideo() {

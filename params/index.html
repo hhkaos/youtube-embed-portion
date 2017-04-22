@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Youtube embed portion video - Builder</title>
+
+  <meta name="description" content="Embed a trimmed/chopped youtube video">
+  <meta name="author" content="Raul Jimenez">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <style type="text/css">
+    #video-preview{
+      margin-top: 1rem;
+    }
+
+    #video-preview iframe{
+      border: 1px solid black;
+      width: 100%;
+      height: 500px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+  <div class="container">
+    <h1>Youtube embed part of video</h1>
+    <form id="vForm" class="row">
+      <div class="form-group col-md-12">
+        <label for="videoId">Video ID</label>
+        <input type="text" class="form-control" id="videoId" value="rMwZTlFAeg8" placeholder="rMwZTlFAeg8" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="startTime">Start time(ex: 58m5s)</label>
+        <input type="text" class="form-control" id="startTime" value="20m43s" placeholder="" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="endTime">End time (ex: 1h20m5s)</label>
+        <input type="text" class="form-control" id="endTime" value="20m55s" placeholder="" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="imgId">End time (ex: 1h20m5s)</label>
+        <select id="imgId" class="form-control">
+          <option value="0">MaxRes</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+      <div class="checkbox col-md-6">
+        <label>
+          <input type="checkbox" checked id="loop"> Loop
+        </label>
+      </div>
+      <div class="checkbox col-md-6">
+        <label>
+          <input type="checkbox" id="muted" checked> Muted
+        </label>
+      </div>
+      <div class="col-md-12">
+        Embed URL: <a id="embedUrl" href=""></a>
+      </div>
+    </form>
+    <div id="video-preview">
+      <iframe src="../?v=rMwZTlFAeg8&s=20m43s&e=20m55s&m=true&loop=true"></iframe>
+    </div>
+  </div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function(){
+      $('#vForm').submit(function(e){
+        e.preventDefault();
+
+      });
+      var updateVideo = function(){
+        var newUrl = createUrl();
+
+        $("#video-preview iframe").attr('src',newUrl);
+        var $embedUrl = $('#embedUrl')
+        $embedUrl.attr('href',newUrl);
+        $embedUrl.text(newUrl);
+      }
+
+      $('#videoId, #startTime, #endTime, #loop, #muted, #imgId').change(function(){
+        updateVideo();
+      });
+      updateVideo();
+
+    });
+    function createUrl(){
+      var baseUrl = window.location.href;
+      baseUrl = baseUrl.split("/params");
+      baseUrl = baseUrl.join('');
+
+      var params = {
+          v: $('#videoId').val(),
+          s: $('#startTime').val(),
+          e: $('#endTime').val(),
+          l: $('#loop').is(":checked"),
+          m: $('#muted').is(":checked")
+      }
+      if($('#imgId').val() !== "0" ){
+        params.imgId = $('#imgId').val();
+      }
+
+      return baseUrl + '?' + $.param(params);
+    }
+  </script>
+</body>
+</html>
